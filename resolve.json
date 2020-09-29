@@ -12,5 +12,12 @@
     "method": "checkout",
     "checkout": "0.13.0",
     "sources": ["github.com:apache/thrift.git"]
+  },
+  {
+    "name": "boost",
+    "resolver": "git",
+    "method": "semver",
+    "major": 4,
+    "sources": ["github.com/steinwurf/boost.git"]
   }
 ]
