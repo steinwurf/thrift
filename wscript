@@ -76,7 +76,12 @@ def build(bld):
         includes=[library_path.abspath(), 'src'],
         target='thrift',
         use=use_flags + ['boost_includes'],
-        export_includes=[library_path])
+        export_includes=[library_path, 'src'])
+
+    bld(features='cxx',
+        source=thrift_path.ant_glob(['test/cpp/src/TestClient.cpp']),
+        target='thrift_test_client',
+        use=['thrift'])
 
     # Would like to build thrift's own tests - however our Boost does
     # not ship with Boost test which is a requirement. We should fix this
