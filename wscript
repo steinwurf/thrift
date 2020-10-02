@@ -38,6 +38,10 @@ def build(bld):
          'lib/cpp/src/thrift/async/TAsyncChannel.cpp',
          'lib/cpp/src/thrift/async/TAsyncProtocolProcessor.cpp',
          'lib/cpp/src/thrift/async/TConcurrentClientSyncInfo.cpp',
+         'lib/cpp/src/thrift/concurrency/Monitor.cpp',
+         'lib/cpp/src/thrift/concurrency/Mutex.cpp',
+         'lib/cpp/src/thrift/concurrency/Thread.cpp',
+         'lib/cpp/src/thrift/concurrency/ThreadFactory.cpp',
          'lib/cpp/src/thrift/concurrency/ThreadManager.cpp',
          'lib/cpp/src/thrift/concurrency/TimerManager.cpp',
          'lib/cpp/src/thrift/processor/PeekProcessor.cpp',
@@ -48,6 +52,7 @@ def build(bld):
          'lib/cpp/src/thrift/protocol/TProtocol.cpp',
          'lib/cpp/src/thrift/transport/TTransportException.cpp',
          'lib/cpp/src/thrift/transport/TFDTransport.cpp',
+         'lib/cpp/src/thrift/transport/TFileTransport.cpp',
          'lib/cpp/src/thrift/transport/TSimpleFileTransport.cpp',
          'lib/cpp/src/thrift/transport/THttpTransport.cpp',
          'lib/cpp/src/thrift/transport/THttpClient.cpp',
@@ -78,9 +83,10 @@ def build(bld):
         use=use_flags + ['boost_includes'],
         export_includes=[library_path, 'src'])
 
-    bld(features='cxx',
-        source=thrift_path.ant_glob(['test/cpp/src/TestClient.cpp']),
-        target='thrift_test_client',
+    bld(features='cxx cxxprogram',
+        source=[thrift_path.ant_glob(['test/cpp/src/StressTest.cpp']),'test/cpp/src/Service.cpp'],
+        target='thrift_stress_test',
+        includes=['test/cpp/src'],
         use=['thrift'])
 
     # Would like to build thrift's own tests - however our Boost does

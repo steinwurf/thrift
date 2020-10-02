@@ -10,3 +10,4 @@
 #include <netinet/tcp.h>
 
 #define PACKAGE_VERSION "0.13.0"
+#define HAVE_SYS_STAT_H 1
