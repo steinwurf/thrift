@@ -87,7 +87,7 @@ def build(bld):
         'STEINWURF_THRIFT_VERSION="{}"'.format(VERSION))
 
     # Path to the thrift repo
-    thrift_path = bld.dependency_node("thrift")
+    thrift_path = bld.dependency_node("thrift-source")
 
     # C++ source files
     library_path = thrift_path.find_dir('lib/cpp/src')
