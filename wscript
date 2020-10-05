@@ -14,33 +14,15 @@ VERSION = '1.0.0'
 class bison(Task.Task):
     """Compiles bison files"""
     color = 'BLUE'
-    run_str = '${BISON} ${BISONFLAGS} ${SRC[0].abspath()} -o ${TGT[0].abspath()}'
+    run_str = '${BISON} ${SRC} --defines=${TGT[1].abspath()} -o ${TGT[0].abspath()}'
     ext_out = ['.h']  # just to make sure
 
 
 class flex(Task.Task):
     """Compiles flex files"""
     color = 'BLUE'
-    run_str = '${FLEX} -o ${TGT[0].abspath()} ${SRC[0].abspath()}'
+    run_str = '${FLEX} -o ${TGT[0].abspath()} ${SRC}'
     ext_out = ['.h']  # just to make sure
-
-
-# class move_thrifty(Task.Task):
-#     """Compiles flex files"""
-#     color = 'BLUE'
-#     after = ['bison']
-#     always_run = True
-
-#     def run(self):
-#         print("HELLO")
-#         assert 0
-
-#         # dst = self.path.get_bld().make_node('thrift/thrifty.hh')
-#         # src = self.path.get_bld().find_node('thrifty.hh')
-
-#         # print(self.path.get_bld())
-
-#         # dst.write(src.read())
 
 
 @extension('.yy')
@@ -48,11 +30,18 @@ def run_bison(self, node):
     """
     Creates a bison task, which must be executed from the directory of the output file.
     """
-    cpp_file = self.path.get_bld().find_or_declare(node.change_ext('.cc').name)
-    hpp_file = self.path.get_bld().find_or_declare(node.change_ext('.hh').name)
+    cpp_file = node.change_ext('.cc').name
+    hpp_file = node.change_ext('.hh').name
 
-    self.create_task('bison', node, [cpp_file, hpp_file])
-    self.source.append(cpp_file)
+    cpp_out = node.parent.find_or_declare(cpp_file)
+    hpp_out = node.parent.find_or_declare(hpp_file)
+
+    # The .hpp file will be ../compiler/cpp/src/thrift/thrifty.hh we need to set
+    # the include path to ../compiler/cpp/src/
+    self.includes.append(hpp_out.parent.parent)
+
+    self.create_task('bison', node, [cpp_out, hpp_out])
+    self.source.append(cpp_out)
 
 
 @extension('.ll')
@@ -61,30 +50,29 @@ def run_flex(self, node):
     Creates a flex task, which must be executed from the directory of the output file.
     """
 
-    cpp_file = self.path.get_bld().find_or_declare(node.change_ext('.cc').name)
+    cpp_file = node.change_ext('.cc').name
+    cpp_out = node.parent.find_or_declare(cpp_file)
 
-    self.create_task('flex', node, [cpp_file])
-    self.source.append(cpp_file)
+    self.create_task('flex', node, [cpp_out])
+    self.source.append(cpp_out)
 
 
-@feature('cxx')
-@after_method('apply_incpaths')
-def insert_blddir(self):
-    self.env.prepend_value('INCPATHS', '.')
+def options(opt):
+    opt.add_option(
+        "--thrift_compiler", default=False, action="store_true",
+        help="Build the thrift compiler")
 
 
 def configure(conf):
     if conf.is_mkspec_platform('linux') and not conf.env['LIB_PTHREAD']:
         conf.check_cxx(lib='pthread')
 
-    if True:  # opt.enable_compiler
+    if conf.options.thrift_compiler:
 
-        # errmsg = """not found, is available in the following packages:
-        #     Debian/Ubuntu: apt install bison
-        # """
-        # conf.find_program('bison', errmsg=errmsg)
-        conf.find_program('bison', var='BISON')
-        conf.env.BISONFLAGS = ['-d']
+        errmsg = """not found, is available in the following packages:
+            Debian/Ubuntu: apt install bison
+        """
+        conf.find_program('bison', errmsg=errmsg)
 
         errmsg = """not found, is available in the following packages:
                     Debian/Ubuntu: apt install flex
@@ -93,21 +81,12 @@ def configure(conf):
 
 
 def build(bld):
-    # bld.env.append_unique(
-    #     'DEFINES_STEINWURF_VERSION',
-    #     'STEINWURF_THRIFT_VERSION="{}"'.format(VERSION))
-
-    use_flags = []
-    if bld.is_mkspec_platform('linux'):
-        use_flags += ['PTHREAD']
+    bld.env.append_unique(
+        'DEFINES_STEINWURF_VERSION',
+        'STEINWURF_THRIFT_VERSION="{}"'.format(VERSION))
 
     # Path to the thrift repo
     thrift_path = bld.dependency_node("thrift")
-
-    # Create system include for thrift
-    bld(name='thrift_includes',
-        export_includes=thrift_path.find_dir('lib').abspath())
-    use_flags += ['']
 
     # C++ source files
     library_path = thrift_path.find_dir('lib/cpp/src')
@@ -160,16 +139,15 @@ def build(bld):
         source=sources,
         includes=[library_path.abspath(), 'lib'],
         target='thrift',
-        use=use_flags + ['thrift_includes', 'boost_includes'],
+        use=['boost_includes'],
         export_includes=[library_path, 'lib'])
 
     if bld.is_toplevel():
 
         bld(features='cxx cxxprogram',
-            source=[thrift_path.ant_glob(
-                ['test/cpp/src/StressTest.cpp', 'test/cpp/src/Service.cpp'])],
+            source=thrift_path.ant_glob(
+                ['test/cpp/src/StressTest.cpp']) + bld.path.ant_glob('test/*.cpp'),
             target='thrift_stress_test',
-            includes=['test/cpp/src'],
             use=['thrift'])
 
     # Would like to build thrift's own tests - however our Boost does
@@ -190,14 +168,14 @@ def build(bld):
     #         target='thrift_tests',
     #         use=['boost_includes', 'thrift'])
 
-    compiler_path = thrift_path.find_dir('compiler/cpp/src')
+    if bld.options.thrift_compiler:
 
-    # tsk = move_thrifty(env=bld.env)
-    # bld.add_to_group(tsk)
+        compiler_path = thrift_path.find_dir('compiler/cpp/src')
 
-    bld(features='cxx cxxprogram',
-        name='compiler',
-        source=compiler_path.ant_glob(
-            '**/*.cc') + compiler_path.ant_glob('**/*.yy') + compiler_path.ant_glob('**/*.ll'),
-        includes=[compiler_path.abspath(), 'compiler'],
-        target='thrift')
+        bld(features='cxx cxxprogram',
+            name='compiler',
+            source=compiler_path.ant_glob(
+                ['**/*.cc', '**/*.cpp', '**/*.yy', '**/*.ll'],
+                excl=['**/logging.cc']),
+            includes=[compiler_path.abspath(), 'compiler'],
+            target='thrift')
