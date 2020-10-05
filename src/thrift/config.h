@@ -1,4 +1,7 @@
 #pragma once
+#ifdef _WIN32
+#include <thrift/windows/config.h>
+#else
 #include <arpa/inet.h>
 #include <sys/time.h>
 #include <sys/socket.h>
@@ -9,5 +12,7 @@
 #include <poll.h>
 #include <netinet/tcp.h>
 
-#define PACKAGE_VERSION "0.13.0"
 #define HAVE_SYS_STAT_H 1
+#endif
+
+#define PACKAGE_VERSION "0.13.0"

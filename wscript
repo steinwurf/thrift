@@ -62,14 +62,24 @@ def build(bld):
          'lib/cpp/src/thrift/transport/TServerSocket.cpp',
          'lib/cpp/src/thrift/transport/TTransportUtils.cpp',
          'lib/cpp/src/thrift/transport/TBufferTransports.cpp',
-         'lib/cpp/src/thrift/transport/TWebSocketServer.h',
+         #'lib/cpp/src/thrift/transport/TWebSocketServer.h',
          'lib/cpp/src/thrift/transport/TWebSocketServer.cpp',
          'lib/cpp/src/thrift/transport/SocketCommon.cpp',
          'lib/cpp/src/thrift/server/TConnectedClient.cpp',
          'lib/cpp/src/thrift/server/TServerFramework.cpp',
          'lib/cpp/src/thrift/server/TSimpleServer.cpp',
          'lib/cpp/src/thrift/server/TThreadPoolServer.cpp',
-         'lib/cpp/src/thrift/server/TThreadedServer.cpp'])
+         'lib/cpp/src/thrift/server/TThreadedServer.cpp',
+         ])
+
+    if bld.is_mkspec_platform('windows'):
+        sources += thrift_path.ant_glob(
+        ['lib/cpp/src/thrift/windows/GetTimeOfDay.cpp',
+         'lib/cpp/src/thrift/windows/OverlappedSubmissionThread.cpp',
+         'lib/cpp/src/thrift/windows/SocketPair.cpp',
+         'lib/cpp/src/thrift/windows/TWinsockSingleton.cpp',
+         'lib/cpp/src/thrift/windows/WinFcntl.cpp',         
+         ])
 
     # Build static library if this is top-level, otherwise just .o files
     features = ['cxx']
@@ -80,6 +90,7 @@ def build(bld):
         source=sources,
         includes=[library_path.abspath(), 'src'],
         target='thrift',
+        defines=['THRIFT_STATIC_DEFINE'],
         use=use_flags + ['boost_includes'],
         export_includes=[library_path, 'src'])
 
@@ -87,6 +98,7 @@ def build(bld):
         source=[thrift_path.ant_glob(['test/cpp/src/StressTest.cpp']),'test/cpp/src/Service.cpp'],
         target='thrift_stress_test',
         includes=['test/cpp/src'],
+        defines=['THRIFT_STATIC_DEFINE'],
         use=['thrift'])
 
     # Would like to build thrift's own tests - however our Boost does
