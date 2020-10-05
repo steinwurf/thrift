@@ -135,6 +135,15 @@ def build(bld):
          'lib/cpp/src/thrift/server/TThreadPoolServer.cpp',
          'lib/cpp/src/thrift/server/TThreadedServer.cpp'])
 
+    if bld.is_mkspec_platform('windows'):
+        sources += thrift_path.ant_glob(
+            ['lib/cpp/src/thrift/windows/GetTimeOfDay.cpp',
+             'lib/cpp/src/thrift/windows/OverlappedSubmissionThread.cpp',
+             'lib/cpp/src/thrift/windows/SocketPair.cpp',
+             'lib/cpp/src/thrift/windows/TWinsockSingleton.cpp',
+             'lib/cpp/src/thrift/windows/WinFcntl.cpp',
+             ])
+
     # Build static library if this is top-level, otherwise just .o files
     features = ['cxx']
     if bld.is_toplevel():
@@ -145,6 +154,8 @@ def build(bld):
         includes=[library_path.abspath(), 'lib'],
         target='thrift',
         use=use_flags + ['boost_includes'],
+        defines=['THRIFT_STATIC_DEFINE'],
+        export_defines=['THRIFT_STATIC_DEFINE'],
         export_includes=[library_path, 'lib'])
 
     if bld.is_toplevel():
