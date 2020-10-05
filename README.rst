@@ -32,7 +32,7 @@ pre-compiled version in `test` folder.
 
 If you are on Linux you can build the Thrift compiler::
 
-    ./waf configure
+    ./waf configure --thrift_compiler
     ./waf build --thrift_compiler
 
 And then compile the Service.thrift file like this:
