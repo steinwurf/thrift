@@ -81,6 +81,11 @@ def configure(conf):
 
 
 def build(bld):
+
+    use_flags = []
+    if bld.is_mkspec_platform('linux'):
+        use_flags += ['PTHREAD']
+
     bld.env.append_unique(
         'DEFINES_STEINWURF_VERSION',
         'STEINWURF_THRIFT_VERSION="{}"'.format(VERSION))
@@ -139,14 +144,15 @@ def build(bld):
         source=sources,
         includes=[library_path.abspath(), 'lib'],
         target='thrift',
-        use=['boost_includes'],
+        use=use_flags + ['boost_includes'],
         export_includes=[library_path, 'lib'])
 
     if bld.is_toplevel():
 
         bld(features='cxx cxxprogram',
             source=thrift_path.ant_glob(
-                ['test/cpp/src/StressTest.cpp']) + bld.path.ant_glob('test/*.cpp'),
+                'test/cpp/src/StressTest.cpp') + bld.path.ant_glob('test/*.cpp'),
+            includes='test',
             target='thrift_stress_test',
             use=['thrift'])
 

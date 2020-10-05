@@ -4,8 +4,8 @@
  * DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
  *  @generated
  */
-#ifndef Service_TYPES_H
-#define Service_TYPES_H
+#ifndef StressTest_TYPES_H
+#define StressTest_TYPES_H
 
 #include <iosfwd>
 
@@ -17,11 +17,10 @@
 
 #include <functional>
 #include <memory>
-#include "Types_types.h"
 
 
+namespace test { namespace stress {
 
-
-
+}} // namespace
 
 #endif

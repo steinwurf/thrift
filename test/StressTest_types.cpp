@@ -4,13 +4,13 @@
  * DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
  *  @generated
  */
-#include "Service_types.h"
+#include "StressTest_types.h"
 
 #include <algorithm>
 #include <ostream>
 
 #include <thrift/TToString.h>
 
+namespace test { namespace stress {
 
-
-
+}} // namespace

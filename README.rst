@@ -37,4 +37,4 @@ If you are on Linux you can build the Thrift compiler::
 
 And then compile the Service.thrift file like this:
 
-./build/linux/thrift-compiler -gen cpp:no_skeleton -out test resolve_symlinks/thrift/test/Service.thrift
+   ./build/linux/thrift-compiler -gen cpp:no_skeleton -out test resolve_symlinks/thrift/test/StressTest.thrift
