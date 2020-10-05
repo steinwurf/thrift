@@ -91,6 +91,7 @@ def build(bld):
         includes=[library_path.abspath(), 'src'],
         target='thrift',
         defines=['THRIFT_STATIC_DEFINE'],
+        export_defines=['THRIFT_STATIC_DEFINE'],
         use=use_flags + ['boost_includes'],
         export_includes=[library_path, 'src'])
 
@@ -98,7 +99,6 @@ def build(bld):
         source=[thrift_path.ant_glob(['test/cpp/src/StressTest.cpp']),'test/cpp/src/Service.cpp'],
         target='thrift_stress_test',
         includes=['test/cpp/src'],
-        defines=['THRIFT_STATIC_DEFINE'],
         use=['thrift'])
 
     # Would like to build thrift's own tests - however our Boost does
