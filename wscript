@@ -1,6 +1,5 @@
-#! /usr/bin/env python
+#!  /usr/bin/env python
 # encoding: utf-8
-
 import os
 from waflib import Task, TaskGen
 from waflib.TaskGen import extension
@@ -17,13 +16,11 @@ class bison(Task.Task):
     run_str = '${BISON} ${SRC} --defines=${TGT[1].abspath()} -o ${TGT[0].abspath()}'
     ext_out = ['.h']  # just to make sure
 
-
 class flex(Task.Task):
     """Compiles flex files"""
     color = 'BLUE'
     run_str = '${FLEX} -o ${TGT[0].abspath()} ${SRC}'
     ext_out = ['.h']  # just to make sure
-
 
 @extension('.yy')
 def run_bison(self, node):
@@ -36,7 +33,8 @@ def run_bison(self, node):
     cpp_out = node.parent.find_or_declare(cpp_file)
     hpp_out = node.parent.find_or_declare(hpp_file)
 
-    # The .hpp file will be ../compiler/cpp/src/thrift/thrifty.hh we need to set
+    # The .hpp file will be ../compiler/cpp/src/thrift/thrifty.hh we need to
+    # set
     # the include path to ../compiler/cpp/src/
     self.includes.append(hpp_out.parent.parent)
 
@@ -58,8 +56,7 @@ def run_flex(self, node):
 
 
 def options(opt):
-    opt.add_option(
-        "--thrift_compiler", default=False, action="store_true",
+    opt.add_option("--thrift_compiler", default=False, action="store_true",
         help="Build the thrift compiler")
 
 
@@ -86,8 +83,7 @@ def build(bld):
     if bld.is_mkspec_platform('linux'):
         use_flags += ['PTHREAD']
 
-    bld.env.append_unique(
-        'DEFINES_STEINWURF_VERSION',
+    bld.env.append_unique('DEFINES_STEINWURF_VERSION',
         'STEINWURF_THRIFT_VERSION="{}"'.format(VERSION))
 
     # Path to the thrift repo
@@ -96,8 +92,7 @@ def build(bld):
     # C++ source files
     library_path = thrift_path.find_dir('lib/cpp/src')
 
-    sources = thrift_path.ant_glob(
-        ['lib/cpp/src/thrift/TApplicationException.cpp',
+    sources = thrift_path.ant_glob(['lib/cpp/src/thrift/TApplicationException.cpp',
          'lib/cpp/src/thrift/TOutput.cpp',
          'lib/cpp/src/thrift/async/TAsyncChannel.cpp',
          'lib/cpp/src/thrift/async/TAsyncProtocolProcessor.cpp',
@@ -126,7 +121,6 @@ def build(bld):
          'lib/cpp/src/thrift/transport/TServerSocket.cpp',
          'lib/cpp/src/thrift/transport/TTransportUtils.cpp',
          'lib/cpp/src/thrift/transport/TBufferTransports.cpp',
-         'lib/cpp/src/thrift/transport/TWebSocketServer.h',
          'lib/cpp/src/thrift/transport/TWebSocketServer.cpp',
          'lib/cpp/src/thrift/transport/SocketCommon.cpp',
          'lib/cpp/src/thrift/server/TConnectedClient.cpp',
@@ -136,13 +130,12 @@ def build(bld):
          'lib/cpp/src/thrift/server/TThreadedServer.cpp'])
 
     if bld.is_mkspec_platform('windows'):
-        sources += thrift_path.ant_glob(
-            ['lib/cpp/src/thrift/windows/GetTimeOfDay.cpp',
-             'lib/cpp/src/thrift/windows/OverlappedSubmissionThread.cpp',
-             'lib/cpp/src/thrift/windows/SocketPair.cpp',
-             'lib/cpp/src/thrift/windows/TWinsockSingleton.cpp',
-             'lib/cpp/src/thrift/windows/WinFcntl.cpp',
-             ])
+        sources += thrift_path.ant_glob(['lib/cpp/src/thrift/windows/GetTimeOfDay.cpp',
+         'lib/cpp/src/thrift/windows/OverlappedSubmissionThread.cpp',
+         'lib/cpp/src/thrift/windows/SocketPair.cpp',
+         'lib/cpp/src/thrift/windows/TWinsockSingleton.cpp',
+         'lib/cpp/src/thrift/windows/WinFcntl.cpp'])
+
 
     # Build static library if this is top-level, otherwise just .o files
     features = ['cxx']
@@ -153,28 +146,27 @@ def build(bld):
         source=sources,
         includes=[library_path.abspath(), 'lib'],
         target='thrift',
-        use=use_flags + ['boost_includes'],
         defines=['THRIFT_STATIC_DEFINE'],
         export_defines=['THRIFT_STATIC_DEFINE'],
+        use=use_flags + ['boost_includes'],
         export_includes=[library_path, 'lib'])
 
     if bld.is_toplevel():
 
         bld(features='cxx cxxprogram',
-            source=thrift_path.ant_glob(
-                'test/cpp/src/StressTest.cpp') + bld.path.ant_glob('test/*.cpp'),
+            source=thrift_path.ant_glob('test/cpp/src/StressTest.cpp') + bld.path.ant_glob('test/*.cpp'),
             includes='test',
             target='thrift_stress_test',
             use=['thrift'])
 
     # Would like to build thrift's own tests - however our Boost does
-    # not ship with Boost test which is a requirement. We should fix this
+    # not ship with Boost test which is a requirement.  We should fix this
     # and build the tests at some point.
     #
     #
     # if bld.is_toplevel():
     #     # Only build tests when executed from the top-level wscript,
-    #     # i.e. not when included as a dependency
+    #     # i.e.  not when included as a dependency
 
     #     test_sources = thrift_path.ant_glob(
     #         ['lib/cpp/test/UnitTestMain.cpp'])
@@ -191,8 +183,7 @@ def build(bld):
 
         bld(features='cxx cxxprogram',
             name='compiler',
-            source=compiler_path.ant_glob(
-                ['**/*.cc', '**/*.cpp', '**/*.yy', '**/*.ll'],
+            source=compiler_path.ant_glob(['**/*.cc', '**/*.cpp', '**/*.yy', '**/*.ll'],
                 excl=['**/logging.cc']),
             includes=[compiler_path.abspath(), 'compiler'],
             target='thrift')
