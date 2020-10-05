@@ -104,6 +104,7 @@ def build(bld):
     # Path to the thrift repo
     thrift_path = bld.dependency_node("thrift")
 
+<<<<<<< HEAD
     # # Create system include for thrift
     # # bld(name='thrift_includes', export_includes=thrift_path.find_dir('lib/cpp').abspath())
     # # use_flags += ['thrift_includes']
@@ -156,6 +157,71 @@ def build(bld):
     #     target='thrift',
     #     use=use_flags + ['boost_includes'],
     #     export_includes=[library_path])
+=======
+    # Create system include for thrift
+    # bld(name='thrift_includes', export_includes=thrift_path.find_dir('lib/cpp').abspath())
+    # use_flags += ['thrift_includes']
+
+    # C++ source files
+    library_path = thrift_path.find_dir('lib/cpp/src')
+
+    sources = thrift_path.ant_glob(
+        ['lib/cpp/src/thrift/TApplicationException.cpp',
+         'lib/cpp/src/thrift/TOutput.cpp',
+         'lib/cpp/src/thrift/async/TAsyncChannel.cpp',
+         'lib/cpp/src/thrift/async/TAsyncProtocolProcessor.cpp',
+         'lib/cpp/src/thrift/async/TConcurrentClientSyncInfo.cpp',
+         'lib/cpp/src/thrift/concurrency/Monitor.cpp',
+         'lib/cpp/src/thrift/concurrency/Mutex.cpp',
+         'lib/cpp/src/thrift/concurrency/Thread.cpp',
+         'lib/cpp/src/thrift/concurrency/ThreadFactory.cpp',
+         'lib/cpp/src/thrift/concurrency/ThreadManager.cpp',
+         'lib/cpp/src/thrift/concurrency/TimerManager.cpp',
+         'lib/cpp/src/thrift/processor/PeekProcessor.cpp',
+         'lib/cpp/src/thrift/protocol/TBase64Utils.cpp',
+         'lib/cpp/src/thrift/protocol/TDebugProtocol.cpp',
+         'lib/cpp/src/thrift/protocol/TJSONProtocol.cpp',
+         'lib/cpp/src/thrift/protocol/TMultiplexedProtocol.cpp',
+         'lib/cpp/src/thrift/protocol/TProtocol.cpp',
+         'lib/cpp/src/thrift/transport/TTransportException.cpp',
+         'lib/cpp/src/thrift/transport/TFDTransport.cpp',
+         'lib/cpp/src/thrift/transport/TFileTransport.cpp',
+         'lib/cpp/src/thrift/transport/TSimpleFileTransport.cpp',
+         'lib/cpp/src/thrift/transport/THttpTransport.cpp',
+         'lib/cpp/src/thrift/transport/THttpClient.cpp',
+         'lib/cpp/src/thrift/transport/THttpServer.cpp',
+         'lib/cpp/src/thrift/transport/TSocket.cpp',
+         'lib/cpp/src/thrift/transport/TSocketPool.cpp',
+         'lib/cpp/src/thrift/transport/TServerSocket.cpp',
+         'lib/cpp/src/thrift/transport/TTransportUtils.cpp',
+         'lib/cpp/src/thrift/transport/TBufferTransports.cpp',
+         'lib/cpp/src/thrift/transport/TWebSocketServer.h',
+         'lib/cpp/src/thrift/transport/TWebSocketServer.cpp',
+         'lib/cpp/src/thrift/transport/SocketCommon.cpp',
+         'lib/cpp/src/thrift/server/TConnectedClient.cpp',
+         'lib/cpp/src/thrift/server/TServerFramework.cpp',
+         'lib/cpp/src/thrift/server/TSimpleServer.cpp',
+         'lib/cpp/src/thrift/server/TThreadPoolServer.cpp',
+         'lib/cpp/src/thrift/server/TThreadedServer.cpp'])
+
+    # Build static library if this is top-level, otherwise just .o files
+    features = ['cxx']
+    if bld.is_toplevel():
+        features += ['cxxstlib']
+
+    bld(features=features,
+        source=sources,
+        includes=[library_path.abspath(), 'src'],
+        target='thrift',
+        use=use_flags + ['boost_includes'],
+        export_includes=[library_path, 'src'])
+
+    bld(features='cxx cxxprogram',
+        source=[thrift_path.ant_glob(['test/cpp/src/StressTest.cpp']),'test/cpp/src/Service.cpp'],
+        target='thrift_stress_test',
+        includes=['test/cpp/src'],
+        use=['thrift'])
+>>>>>>> origin/trying-to-build-testclient
 
     # Would like to build thrift's own tests - however our Boost does
     # not ship with Boost test which is a requirement. We should fix this
