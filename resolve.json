@@ -7,7 +7,7 @@
     "sources": ["github.com/steinwurf/waf-tools.git"]
   },
   {
-    "name": "thrift",
+    "name": "thrift-source",
     "resolver": "git",
     "method": "checkout",
     "checkout": "0.13.0",
