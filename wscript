@@ -126,7 +126,6 @@ def build(bld):
          'lib/cpp/src/thrift/transport/TServerSocket.cpp',
          'lib/cpp/src/thrift/transport/TTransportUtils.cpp',
          'lib/cpp/src/thrift/transport/TBufferTransports.cpp',
-         #'lib/cpp/src/thrift/transport/TWebSocketServer.h',
          'lib/cpp/src/thrift/transport/TWebSocketServer.cpp',
          'lib/cpp/src/thrift/transport/SocketCommon.cpp',
          'lib/cpp/src/thrift/server/TConnectedClient.cpp',
@@ -145,14 +144,6 @@ def build(bld):
          'lib/cpp/src/thrift/windows/WinFcntl.cpp',         
          ])
 
-    if bld.is_mkspec_platform('windows'):
-        sources += thrift_path.ant_glob(
-            ['lib/cpp/src/thrift/windows/GetTimeOfDay.cpp',
-             'lib/cpp/src/thrift/windows/OverlappedSubmissionThread.cpp',
-             'lib/cpp/src/thrift/windows/SocketPair.cpp',
-             'lib/cpp/src/thrift/windows/TWinsockSingleton.cpp',
-             'lib/cpp/src/thrift/windows/WinFcntl.cpp',
-             ])
 
     # Build static library if this is top-level, otherwise just .o files
     features = ['cxx']
@@ -166,8 +157,6 @@ def build(bld):
         defines=['THRIFT_STATIC_DEFINE'],
         export_defines=['THRIFT_STATIC_DEFINE'],
         use=use_flags + ['boost_includes'],
-        defines=['THRIFT_STATIC_DEFINE'],
-        export_defines=['THRIFT_STATIC_DEFINE'],
         export_includes=[library_path, 'lib'])
 
     if bld.is_toplevel():
