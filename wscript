@@ -195,9 +195,9 @@ def build(bld):
     # tsk = move_thrifty(env=bld.env)
     # bld.add_to_group(tsk)
 
-    # bld(features='cxx cxxprogram',
-    #     name='compiler',
-    #     source=compiler_path.ant_glob(
-    #         '**/*.cc') + compiler_path.ant_glob('**/*.yy') + compiler_path.ant_glob('**/*.ll'),
-    #     includes=[compiler_path.abspath(), 'compiler'],
-    #     target='thrift')
+    bld(features='cxx cxxprogram',
+        name='compiler',
+        source=compiler_path.ant_glob(
+            '**/*.cc') + compiler_path.ant_glob('**/*.yy') + compiler_path.ant_glob('**/*.ll'),
+        includes=[compiler_path.abspath(), 'compiler'],
+        target='thrift')
