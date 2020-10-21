@@ -16,11 +16,13 @@ class bison(Task.Task):
     run_str = '${BISON} ${SRC} --defines=${TGT[1].abspath()} -o ${TGT[0].abspath()}'
     ext_out = ['.h']  # just to make sure
 
+
 class flex(Task.Task):
     """Compiles flex files"""
     color = 'BLUE'
     run_str = '${FLEX} -o ${TGT[0].abspath()} ${SRC}'
     ext_out = ['.h']  # just to make sure
+
 
 @extension('.yy')
 def run_bison(self, node):
@@ -57,24 +59,16 @@ def run_flex(self, node):
 
 def options(opt):
     opt.add_option("--thrift_compiler", default=False, action="store_true",
-        help="Build the thrift compiler")
+                   help="Build the thrift compiler")
 
 
 def configure(conf):
     if conf.is_mkspec_platform('linux') and not conf.env['LIB_PTHREAD']:
         conf.check_cxx(lib='pthread')
 
-    if conf.options.thrift_compiler:
-
-        errmsg = """not found, is available in the following packages:
-            Debian/Ubuntu: apt install bison
-        """
-        conf.find_program('bison', errmsg=errmsg)
-
-        errmsg = """not found, is available in the following packages:
-                    Debian/Ubuntu: apt install flex
-                """
-        conf.find_program('flex', errmsg=errmsg)
+    # We need bison and flex to build the thrift compiler
+    conf.find_program('bison', mandatory=False)
+    conf.find_program('flex', mandatory=False)
 
 
 def build(bld):
@@ -84,7 +78,7 @@ def build(bld):
         use_flags += ['PTHREAD']
 
     bld.env.append_unique('DEFINES_STEINWURF_VERSION',
-        'STEINWURF_THRIFT_VERSION="{}"'.format(VERSION))
+                          'STEINWURF_THRIFT_VERSION="{}"'.format(VERSION))
 
     # Path to the thrift repo
     thrift_path = bld.dependency_node("thrift-source")
@@ -93,49 +87,48 @@ def build(bld):
     library_path = thrift_path.find_dir('lib/cpp/src')
 
     sources = thrift_path.ant_glob(['lib/cpp/src/thrift/TApplicationException.cpp',
-         'lib/cpp/src/thrift/TOutput.cpp',
-         'lib/cpp/src/thrift/async/TAsyncChannel.cpp',
-         'lib/cpp/src/thrift/async/TAsyncProtocolProcessor.cpp',
-         'lib/cpp/src/thrift/async/TConcurrentClientSyncInfo.cpp',
-         'lib/cpp/src/thrift/concurrency/Monitor.cpp',
-         'lib/cpp/src/thrift/concurrency/Mutex.cpp',
-         'lib/cpp/src/thrift/concurrency/Thread.cpp',
-         'lib/cpp/src/thrift/concurrency/ThreadFactory.cpp',
-         'lib/cpp/src/thrift/concurrency/ThreadManager.cpp',
-         'lib/cpp/src/thrift/concurrency/TimerManager.cpp',
-         'lib/cpp/src/thrift/processor/PeekProcessor.cpp',
-         'lib/cpp/src/thrift/protocol/TBase64Utils.cpp',
-         'lib/cpp/src/thrift/protocol/TDebugProtocol.cpp',
-         'lib/cpp/src/thrift/protocol/TJSONProtocol.cpp',
-         'lib/cpp/src/thrift/protocol/TMultiplexedProtocol.cpp',
-         'lib/cpp/src/thrift/protocol/TProtocol.cpp',
-         'lib/cpp/src/thrift/transport/TTransportException.cpp',
-         'lib/cpp/src/thrift/transport/TFDTransport.cpp',
-         'lib/cpp/src/thrift/transport/TFileTransport.cpp',
-         'lib/cpp/src/thrift/transport/TSimpleFileTransport.cpp',
-         'lib/cpp/src/thrift/transport/THttpTransport.cpp',
-         'lib/cpp/src/thrift/transport/THttpClient.cpp',
-         'lib/cpp/src/thrift/transport/THttpServer.cpp',
-         'lib/cpp/src/thrift/transport/TSocket.cpp',
-         'lib/cpp/src/thrift/transport/TSocketPool.cpp',
-         'lib/cpp/src/thrift/transport/TServerSocket.cpp',
-         'lib/cpp/src/thrift/transport/TTransportUtils.cpp',
-         'lib/cpp/src/thrift/transport/TBufferTransports.cpp',
-         'lib/cpp/src/thrift/transport/TWebSocketServer.cpp',
-         'lib/cpp/src/thrift/transport/SocketCommon.cpp',
-         'lib/cpp/src/thrift/server/TConnectedClient.cpp',
-         'lib/cpp/src/thrift/server/TServerFramework.cpp',
-         'lib/cpp/src/thrift/server/TSimpleServer.cpp',
-         'lib/cpp/src/thrift/server/TThreadPoolServer.cpp',
-         'lib/cpp/src/thrift/server/TThreadedServer.cpp'])
+                                    'lib/cpp/src/thrift/TOutput.cpp',
+                                    'lib/cpp/src/thrift/async/TAsyncChannel.cpp',
+                                    'lib/cpp/src/thrift/async/TAsyncProtocolProcessor.cpp',
+                                    'lib/cpp/src/thrift/async/TConcurrentClientSyncInfo.cpp',
+                                    'lib/cpp/src/thrift/concurrency/Monitor.cpp',
+                                    'lib/cpp/src/thrift/concurrency/Mutex.cpp',
+                                    'lib/cpp/src/thrift/concurrency/Thread.cpp',
+                                    'lib/cpp/src/thrift/concurrency/ThreadFactory.cpp',
+                                    'lib/cpp/src/thrift/concurrency/ThreadManager.cpp',
+                                    'lib/cpp/src/thrift/concurrency/TimerManager.cpp',
+                                    'lib/cpp/src/thrift/processor/PeekProcessor.cpp',
+                                    'lib/cpp/src/thrift/protocol/TBase64Utils.cpp',
+                                    'lib/cpp/src/thrift/protocol/TDebugProtocol.cpp',
+                                    'lib/cpp/src/thrift/protocol/TJSONProtocol.cpp',
+                                    'lib/cpp/src/thrift/protocol/TMultiplexedProtocol.cpp',
+                                    'lib/cpp/src/thrift/protocol/TProtocol.cpp',
+                                    'lib/cpp/src/thrift/transport/TTransportException.cpp',
+                                    'lib/cpp/src/thrift/transport/TFDTransport.cpp',
+                                    'lib/cpp/src/thrift/transport/TFileTransport.cpp',
+                                    'lib/cpp/src/thrift/transport/TSimpleFileTransport.cpp',
+                                    'lib/cpp/src/thrift/transport/THttpTransport.cpp',
+                                    'lib/cpp/src/thrift/transport/THttpClient.cpp',
+                                    'lib/cpp/src/thrift/transport/THttpServer.cpp',
+                                    'lib/cpp/src/thrift/transport/TSocket.cpp',
+                                    'lib/cpp/src/thrift/transport/TSocketPool.cpp',
+                                    'lib/cpp/src/thrift/transport/TServerSocket.cpp',
+                                    'lib/cpp/src/thrift/transport/TTransportUtils.cpp',
+                                    'lib/cpp/src/thrift/transport/TBufferTransports.cpp',
+                                    'lib/cpp/src/thrift/transport/TWebSocketServer.cpp',
+                                    'lib/cpp/src/thrift/transport/SocketCommon.cpp',
+                                    'lib/cpp/src/thrift/server/TConnectedClient.cpp',
+                                    'lib/cpp/src/thrift/server/TServerFramework.cpp',
+                                    'lib/cpp/src/thrift/server/TSimpleServer.cpp',
+                                    'lib/cpp/src/thrift/server/TThreadPoolServer.cpp',
+                                    'lib/cpp/src/thrift/server/TThreadedServer.cpp'])
 
     if bld.is_mkspec_platform('windows'):
         sources += thrift_path.ant_glob(['lib/cpp/src/thrift/windows/GetTimeOfDay.cpp',
-         'lib/cpp/src/thrift/windows/OverlappedSubmissionThread.cpp',
-         'lib/cpp/src/thrift/windows/SocketPair.cpp',
-         'lib/cpp/src/thrift/windows/TWinsockSingleton.cpp',
-         'lib/cpp/src/thrift/windows/WinFcntl.cpp'])
-
+                                         'lib/cpp/src/thrift/windows/OverlappedSubmissionThread.cpp',
+                                         'lib/cpp/src/thrift/windows/SocketPair.cpp',
+                                         'lib/cpp/src/thrift/windows/TWinsockSingleton.cpp',
+                                         'lib/cpp/src/thrift/windows/WinFcntl.cpp'])
 
     # Build static library if this is top-level, otherwise just .o files
     features = ['cxx']
@@ -154,7 +147,8 @@ def build(bld):
     if bld.is_toplevel():
 
         bld(features='cxx cxxprogram',
-            source=thrift_path.ant_glob('test/cpp/src/StressTest.cpp') + bld.path.ant_glob('test/*.cpp'),
+            source=thrift_path.ant_glob(
+                'test/cpp/src/StressTest.cpp') + bld.path.ant_glob('test/*.cpp'),
             includes='test',
             target='thrift_stress_test',
             use=['thrift'])
@@ -179,11 +173,21 @@ def build(bld):
 
     if bld.options.thrift_compiler:
 
+        if not bld.env.BISON:
+
+            bld.fatal("""Bison not found, is available in the following packages:
+                Debian/Ubuntu: apt install bison""")
+
+        if not bld.env.FLEX:
+
+            bld.fatal("""Flex not found, is available in the following packages:
+                Debian/Ubuntu: apt install flex""")
+
         compiler_path = thrift_path.find_dir('compiler/cpp/src')
 
         bld(features='cxx cxxprogram',
             name='compiler',
             source=compiler_path.ant_glob(['**/*.cc', '**/*.cpp', '**/*.yy', '**/*.ll'],
-                excl=['**/logging.cc']),
+                                          excl=['**/logging.cc']),
             includes=[compiler_path.abspath(), 'compiler'],
             target='thrift')

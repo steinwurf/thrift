@@ -6,6 +6,7 @@ every change, see the Git log.
 
 Latest
 ------
-* Major: Initial version
+* Patch: Better error handling when looking for Bison and Flex.
+* Major: Initial version.
 
 
