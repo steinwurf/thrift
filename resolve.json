@@ -10,7 +10,7 @@
     "name": "thrift-source",
     "resolver": "git",
     "method": "checkout",
-    "checkout": "0.13.0",
+    "checkout": "master",
     "sources": ["github.com:apache/thrift.git"]
   },
   {
