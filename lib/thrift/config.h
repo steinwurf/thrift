@@ -13,6 +13,8 @@
 #include <netinet/tcp.h>
 
 #define HAVE_SYS_STAT_H 1
+#define STRERROR_R_CHAR_P 1
+#define HAVE_STRERROR_R 1
 #endif
 
 #define PACKAGE_VERSION "0.13.0"
