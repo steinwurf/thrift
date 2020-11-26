@@ -11,7 +11,7 @@
     "resolver": "git",
     "method": "checkout",
     "checkout": "rlo_warning_fix",
-    "sources": ["github.com:steinwurf/thrift-source.git"]
+    "sources": ["github.com/steinwurf/thrift-source.git"]
   },
   {
     "name": "boost",
