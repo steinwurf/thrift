@@ -10,7 +10,7 @@
     "name": "thrift-source",
     "resolver": "git",
     "method": "checkout",
-    "checkout": "rlo_warning_fix",
+    "checkout": "rlo_build_android",
     "sources": ["github.com/steinwurf/thrift-source.git"]
   },
   {

@@ -14,9 +14,12 @@
 
 #define HAVE_SYS_STAT_H 1
 
+
+
 #if defined(ANDROID) || defined(__ANDROID__)
 #define STRERROR_R_CHAR_P 0
 #define HAVE_STRERROR_R 0
+#define HAVE_STRERROR_S 0
 #else
 #define STRERROR_R_CHAR_P 1
 #define HAVE_STRERROR_R 1
