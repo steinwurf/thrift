@@ -17,7 +17,6 @@
 
 
 #if defined(ANDROID) || defined(__ANDROID__)
-#define STRERROR_R_CHAR_P 1
 #define HAVE_STRERROR_R 1
 #else
 #define STRERROR_R_CHAR_P 1
