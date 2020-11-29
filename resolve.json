@@ -10,7 +10,7 @@
     "name": "thrift-source",
     "resolver": "git",
     "method": "checkout",
-    "checkout": "rlo_warning_fix",
+    "checkout": "rlo_warning_fix_2",
     "sources": ["github.com/steinwurf/thrift-source.git"]
   },
   {
