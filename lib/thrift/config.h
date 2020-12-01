@@ -13,7 +13,7 @@
 #include <netinet/tcp.h>
 
 #define HAVE_SYS_STAT_H 1
-#pragma clang diagnostic ignored "-Wpragma-messages"
+#pragma clang diagnostic ignored "-W#pragma-messages"
 #pragma message "HEJ"
 
 #if defined(_POSIX_C_SOURCE) || defined(_XOPEN_SOURCE) || defined(_GNU_SOURCE) 
