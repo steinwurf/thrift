@@ -13,8 +13,10 @@
 #include <netinet/tcp.h>
 
 #define HAVE_SYS_STAT_H 1
-#pragma clang diagnostic ignored "-W#pragma-messages"
-#pragma message "HEJ"
+
+#define STR(x) #x
+#define XSTR(x) STR(x)
+#pragma message(XSTR(_POSIX_C_SOURCE) " " XSTR(_XOPEN_SOURCE) " " XSTR(_POSIX_C_SOURCE))
 
 #if defined(_POSIX_C_SOURCE) || defined(_XOPEN_SOURCE) || defined(_GNU_SOURCE) 
 #if !((_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && !_GNU_SOURCE)
