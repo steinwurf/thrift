@@ -141,8 +141,8 @@ def build(bld):
         source=sources,
         includes=[library_path.abspath(), 'lib'],
         target='thrift',
-        defines=['THRIFT_STATIC_DEFINE'],
-        export_defines=['THRIFT_STATIC_DEFINE'],
+        defines=['THRIFT_STATIC_DEFINE', 'NOMINMAX'],
+        export_defines=['THRIFT_STATIC_DEFINE', 'NOMINMAX'],
         use=use_flags + ['boost_includes'],
         export_includes=[library_path, 'lib'])
 
