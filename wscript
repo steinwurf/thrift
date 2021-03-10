@@ -116,7 +116,6 @@ def build(bld):
          'lib/cpp/src/thrift/transport/TServerSocket.cpp',
          'lib/cpp/src/thrift/transport/TTransportUtils.cpp',
          'lib/cpp/src/thrift/transport/TBufferTransports.cpp',
-         'lib/cpp/src/thrift/transport/TWebSocketServer.cpp',
          'lib/cpp/src/thrift/transport/SocketCommon.cpp',
          'lib/cpp/src/thrift/server/TConnectedClient.cpp',
          'lib/cpp/src/thrift/server/TServerFramework.cpp',
@@ -141,8 +140,8 @@ def build(bld):
         source=sources,
         includes=[library_path.abspath(), 'lib'],
         target='thrift',
-        defines=['THRIFT_STATIC_DEFINE'],
-        export_defines=['THRIFT_STATIC_DEFINE'],
+        defines=['THRIFT_STATIC_DEFINE', 'NOMINMAX'],
+        export_defines=['THRIFT_STATIC_DEFINE', 'NOMINMAX'],
         use=use_flags + ['boost_includes'],
         export_includes=[library_path, 'lib'])
 
@@ -155,11 +154,9 @@ def build(bld):
             target='thrift_stress_test',
             use=['thrift'])
 
-    # Would like to build thrift's own tests - however our Boost does
-    # not ship with Boost test which is a requirement.  We should fix this
-    # and build the tests at some point.
-    #
-    #
+    # # Would like to build thrift's own tests - however our Boost does
+    # # not ship with Boost test which is a requirement.  We should fix this
+    # # and build the tests at some point.
     # if bld.is_toplevel():
     #     # Only build tests when executed from the top-level wscript,
     #     # i.e.  not when included as a dependency

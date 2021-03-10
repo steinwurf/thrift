@@ -10,8 +10,8 @@
     "name": "thrift-source",
     "resolver": "git",
     "method": "checkout",
-    "checkout": "0.13.0",
-    "sources": ["github.com:apache/thrift.git"]
+    "checkout": "ca6875f546f9ad385334f6f74bb77cb15892a444",
+    "sources": ["github.com/steinwurf/thrift-source.git"]
   },
   {
     "name": "boost",
