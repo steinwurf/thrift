@@ -116,7 +116,7 @@ def build(bld):
          'lib/cpp/src/thrift/transport/TServerSocket.cpp',
          'lib/cpp/src/thrift/transport/TTransportUtils.cpp',
          'lib/cpp/src/thrift/transport/TBufferTransports.cpp',
-         #'lib/cpp/src/thrift/transport/TWebSocketServer.cpp',
+         'lib/cpp/src/thrift/transport/TWebSocketServer.cpp',
          'lib/cpp/src/thrift/transport/SocketCommon.cpp',
          'lib/cpp/src/thrift/server/TConnectedClient.cpp',
          'lib/cpp/src/thrift/server/TServerFramework.cpp',
