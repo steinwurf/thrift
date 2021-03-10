@@ -12,5 +12,3 @@ Latest
 -----
 * Patch: Better error handling when looking for Bison and Flex.
 * Major: Initial version.
-
-
