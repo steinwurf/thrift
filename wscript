@@ -154,11 +154,9 @@ def build(bld):
             target='thrift_stress_test',
             use=['thrift'])
 
-    # Would like to build thrift's own tests - however our Boost does
-    # not ship with Boost test which is a requirement.  We should fix this
-    # and build the tests at some point.
-    #
-    #
+    # # Would like to build thrift's own tests - however our Boost does
+    # # not ship with Boost test which is a requirement.  We should fix this
+    # # and build the tests at some point.
     # if bld.is_toplevel():
     #     # Only build tests when executed from the top-level wscript,
     #     # i.e.  not when included as a dependency
