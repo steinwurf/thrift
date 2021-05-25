@@ -38,39 +38,15 @@ jobs:
     steps:
       - name: Install SSH client
         run: apt update && apt -y install openssh-client
+      - name: Install tools
+        run: |
+          apt install bison
+          apt install flex
       - name: Checkout source code
         uses: actions/checkout@v2
       - name: Waf Configure
         run: python3 waf configure --git_protocol=git@ ${{ matrix.config.cxx_mkspec }} --thrift_compiler
       - name: Waf Build
-        run: |
-          echo "::add-matcher::.github/gcc-problem-matcher.json"
-          python3 waf build --thrift_compiler
-  # Build performed on runner using make specs
-  cxx_mkspec:
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-          - cxx_mkspec: cxx_clang70_x64
-            name: Clang 7.0 64-Bit
-          - cxx_mkspec: cxx_gxx83_x64
-            name: GCC 8.3 64-Bit
-    runs-on: [self-hosted, "${{ matrix.config.cxx_mkspec }}"]
-    name: ${{ matrix.config.name }}
-    env:
-      python: python3
-    steps:
-      - name: Rename python3 to python on Windows
-        if: runner.os == 'Windows'
-        run: echo "python=python" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Configure
-        env:
-          GIT_SSH_COMMAND: "${{ runner.os != 'Linux' && 'ssh' || 'ssh -i /home/buildbot/.ssh/id_ed25519 -o IdentitiesOnly=yes' }}"
-        run: python3 waf configure --git_protocol=git@ --cxx_mkspec=${{ matrix.config.cxx_mkspec }} --thrift_compiler
-      - name: Build
         run: |
           echo "::add-matcher::.github/gcc-problem-matcher.json"
           python3 waf build --thrift_compiler
