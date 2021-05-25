@@ -40,8 +40,9 @@ jobs:
         run: apt update && apt -y install openssh-client
       - name: Install tools
         run: |
-          apt install bison
-          apt install flex
+          apt update
+          apt -y install bison
+          apt -y install flex
       - name: Checkout source code
         uses: actions/checkout@v2
       - name: Waf Configure
