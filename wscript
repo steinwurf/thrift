@@ -7,7 +7,7 @@ from waflib.TaskGen import feature
 from waflib.TaskGen import after_method
 
 APPNAME = 'thrift'
-VERSION = '1.0.0'
+VERSION = "1.1.0"
 
 
 class bison(Task.Task):
