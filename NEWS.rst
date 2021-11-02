@@ -8,6 +8,9 @@ Latest
 ------
 * tbd
 
+1.2.0
+* Minor: Custom CMake build for thrift cpp library.
+
 1.1.0
 -----
 * Minor: Added CMake support.
